@@ -35,6 +35,30 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/translate", async (req, res) => {
+  const { date } = req.body;
+  try {
+    const response = await axios.post(
+      "https://Translate.proxy-production.allthingsdev.co/translate?translated_from=eng&translated_to=hin",
+
+      { data },
+      {
+        headers: {
+          "x-apihub-key": "FUBj8lBpB1PjUdvVx0Ni-8tX6ZZV0ATmxUoRjI3J7HCV-4DMQB",
+          "x-apihub-host": "Translate.allthingsdev.co",
+          "x-apihub-endpoint": "3f4ee5f4-f67c-4c5a-9375-635d8b514026",
+        },
+      }
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({
+      error: "Error sending business message",
+      details: error.message,
+    });
+  }
+});
+
 app.post("/send-business-message", async (req, res) => {
   if (!token) {
     return res.status(401).json({ error: "Unauthorized: No token provided" });
