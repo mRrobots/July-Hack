@@ -1,17 +1,24 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
 let token = null; // Variable to store the token
 
-// Endpoint to login and get a token
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+// Function to login and get a token
+async function login() {
+  const { username, password } = {
+    username: "67861376f4ea2439e290f072d7825d9803bb1a3b",
+    password: "IJ5TWJhVtumqHfx3I1Gkfq7ZlnCmoBO",
+  };
   try {
     const response = await axios.post(
       "https://api.ayoba.me/v2/login",
@@ -27,13 +34,15 @@ app.post("/login", async (req, res) => {
       }
     );
     token = response.data.access_token; // Extracting only the access_token
-    res.json({ message: "Login successful", token });
+    console.log({ message: "Login successful", token });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error during login", details: error.message });
+    console.log({ error: "Error during login", details: error.message });
   }
-});
+}
+// reset the token every 15 minutes
+setInterval(login, 15 * 60 * 1000);
+
+login();
 
 app.post("/translate", async (req, res) => {
   const { date } = req.body;
